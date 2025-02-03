@@ -1,0 +1,15 @@
+# Markdown link parser in Go
+
+This is a Go-written version of my [markdown parser in Python](https://github.com/paveltovchigrechko/markdown-parser). Although, most modern static site generators check anchor links, some of them still do not perform this check. And, this is educational project for me as well.
+
+## Build
+
+To be written.
+
+## Usage
+
+Intended usage:
+
+```shell
+[binary] [directory-root] [options]
+```
