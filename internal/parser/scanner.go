@@ -4,6 +4,7 @@ import (
 	"io/fs"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -29,8 +30,13 @@ func (s *Scanner) ScanFilesWithExt() {
 			log.Println(err)
 		}
 		if strings.HasSuffix(d.Name(), s.extension) {
-			s.filenames = append(s.filenames, path)
+			absPath, err := filepath.Abs(path)
+			if err != nil {
+				log.Println(err)
+			}
+			s.filenames = append(s.filenames, absPath)
 		}
+
 		return nil
 	})
 }
