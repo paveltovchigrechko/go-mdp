@@ -1,7 +1,9 @@
 package parser
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"regexp"
 	"strings"
 )
@@ -73,4 +75,40 @@ func ParseHeadings(s string) []string {
 	}
 
 	return headingURLs
+}
+
+type Parser struct {
+	filenames   []string
+	fileHeaders map[string][]string
+}
+
+func New(s *Scanner) *Parser {
+	p := &Parser{
+		filenames:   s.filenames,
+		fileHeaders: make(map[string][]string),
+	}
+
+	return p
+}
+
+func (p *Parser) ParseHeadingsInFiles() {
+	for _, filename := range p.filenames {
+		content, err := os.ReadFile(filename)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+
+		p.fileHeaders[filename] = ParseHeadings(string(content))
+	}
+}
+
+// Helper method, might delete later
+func (p Parser) PrintHeadings() {
+	for filename, headings := range p.fileHeaders {
+		fmt.Printf("File %s. Headings:\n", filename)
+		for i, heading := range headings {
+			fmt.Printf("%d: %s\n", i+1, heading)
+		}
+	}
 }
