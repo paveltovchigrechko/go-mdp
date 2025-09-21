@@ -56,10 +56,10 @@ func extractHeadingURL(s string) string {
 	return strings.Join(words[1:], headingURLSep)
 }
 
-// ParseHeadings accepts a string (a Markdown file content) and returns a slice of heading IDs
-// in format `some-text` here. If a heading has an ID (in format `# Some text {#custom-id}`),
+// parseLines accepts a string (a Markdown file content) and returns a slice of heading IDs
+// in format `some-text` and slice of links (curremtly nil). If a heading has an ID (in format `# Some text {#custom-id}`),
 // function returns stripped ID (`custom-id`).
-func ParseHeadings(s string) []string {
+func parseLines(s string) ([]string, []string) {
 	lines := strings.Split(s, newlineSep)
 	headingURLs := make([]string, 0)
 
@@ -72,9 +72,23 @@ func ParseHeadings(s string) []string {
 			headingURL := extractHeadingURL(line)
 			headingURLs = append(headingURLs, headingURL)
 		}
+
+		if containsLinks(line) {
+			_ = parseLinks(line)
+		}
 	}
 
-	return headingURLs
+	return headingURLs, nil
+}
+
+// TODO
+func containsLinks(s string) bool {
+	return false
+}
+
+// TODO
+func parseLinks(s string) []string {
+	return nil
 }
 
 type Parser struct {
@@ -99,7 +113,7 @@ func (p *Parser) ParseHeadingsInFiles() {
 			continue
 		}
 
-		p.fileHeaders[filename] = ParseHeadings(string(content))
+		p.fileHeaders[filename], _ = parseLines(string(content))
 	}
 }
 
