@@ -13,8 +13,9 @@ const (
 	headingSep            = " "
 	headingURLSep         = "-"
 	newlineSep            = "\n"
-	idPattern             = "{#.+}$"
 	headingIdSymbols      = "{#}"
+	idPattern             = "{#.+}$"
+	commentPattern        = "<!--.+-->"
 )
 
 // isHeading accepts a string and return if the string is a Markdown header (starts with `#` symbol).
@@ -64,7 +65,7 @@ func parseLines(s string) ([]string, []string) {
 	headingURLs := make([]string, 0)
 
 	for _, line := range lines {
-		if len(line) == 0 {
+		if len(line) == 0 || isCommented(line) {
 			continue
 		}
 
@@ -79,6 +80,16 @@ func parseLines(s string) ([]string, []string) {
 	}
 
 	return headingURLs, nil
+}
+
+func isCommented(s string) bool {
+	result, err := regexp.MatchString(commentPattern, s)
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+
+	return result
 }
 
 // TODO
